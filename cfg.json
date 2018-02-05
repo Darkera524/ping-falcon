@@ -1,0 +1,6 @@
+{
+  "interval": 300,
+  "portal-path": "root:@tcp(127.0.0.1:3306)/falcon_portal?loc=Local&parseTime=true",
+  "maxConn": 20,
+  "maxIdle": 15
+}
