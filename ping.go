@@ -27,9 +27,12 @@ func Ping(){
 	pinger.OnIdle = func() {
 		Logger().Println("Idle")
 	}
-	err := pinger.Run()
-	if err != nil {
-		Logger().Println(err.Error())
+
+	for i:=0;i<5;i++ {
+		err := pinger.Run()
+		if err != nil {
+			Logger().Println(err.Error())
+		}
 	}
 
 	for k,v := range output{
