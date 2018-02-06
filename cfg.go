@@ -17,6 +17,7 @@ type Config struct {
 	Portal_path	string `json:"portal_path"`
 	MaxConn int `json:"maxConn"`
 	MaxIdle int `json:"maxIdle"`
+	Agent_path string `json:"agent_path"`
 }
 
 func ParseConfig(cfg string){
@@ -49,4 +50,5 @@ func CronConfig(interval int, cfg string){
 		ParseConfig(cfg)
 	}
 }
+
 

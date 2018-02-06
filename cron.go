@@ -43,3 +43,10 @@ func CronHost(){
 func GetHostMap() map[string]string {
 	return hostmap
 }
+
+func CronPing(){
+	for {
+		go ping()
+		time.Sleep(time.Duration(60) * time.Second)
+	}
+}

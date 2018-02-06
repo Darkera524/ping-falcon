@@ -10,10 +10,16 @@ import (
 	"net"
 	"time"
 	//"fmt"
+	//"fmt"
+	"github.com/open-falcon/common/model"
 	"fmt"
+	"os"
+	"encoding/json"
+	"bytes"
+	"net/http"
 )
 
-func Ping(){
+func ping(){
 	output := make(map[string]int)
 	ipmap := GetHostMap()
 	pinger := fastping.NewPinger()
@@ -30,30 +36,79 @@ func Ping(){
 		Logger().Println("Idle")
 	}
 
-	pinger.MaxRTT = time.Duration(5) * time.Second
-	fmt.Println(pinger.MaxRTT.String())
-
-	for i:=0;i<1;i++ {
+	for i:=0;i<10;i++ {
 		err := pinger.Run()
 		if err != nil {
 			Logger().Println(err.Error())
 		}
 	}
 
-	for k,v := range output{
+	/*for k,v := range output{
 		if v == 0{
 			fmt.Println(k)
 		}
+	}*/
+
+	metrics, err := formatMetric(output)
+	if err != nil {
+		Logger().Println(err.Error())
 	}
 
-	//formatMetric(output)
+	PostToAgent(metrics)
+
 }
 
-/*func formatMetric(output map[string]string){
+func formatMetric(output map[string]int)(metrics []*model.MetricValue, err error){
+	hostname,err := os.Hostname()
+	if err != nil {
+		return metrics,err
+	}
+	for k,v := range output {
+		tags := fmt.Sprintf("hostname=%s",k)
+		now := time.Now().Unix()
+		singleMetric := &model.MetricValue{
+			Endpoint:  hostname,
+			Metric:    "host.ping",
+			Value:     v,
+			Timestamp: now,
+			Step:      60,
+			Type:      "GAUGE",
+			Tags:      tags,
+		}
+		metrics = append(metrics, singleMetric)
+	}
 
+	return metrics,nil
+}
 
+func PostToAgent(metrics []*model.MetricValue) {
+	if len(metrics) == 0 {
+		return
+	}
 
-}*/
+	contentJson, err := json.Marshal(metrics)
+	if err != nil {
+		Logger().Println("Error for PostToAgent json Marshal: ", err)
+		return
+	}
+	contentReader := bytes.NewReader(contentJson)
+	req, err := http.NewRequest("POST", GetConfig().Agent_path, contentReader)
+	if err != nil {
+		Logger().Println("Error for PostToAgent in NewRequest: ", err)
+		return
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		Logger().Println("Error for PostToAgent in http client Do: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	Logger().Println("<= ", resp.Body)
+}
 
 //由于未知原因，部分机器在数据库无ip
 func nslookup(hostname string) (string, error) {

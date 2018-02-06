@@ -20,7 +20,7 @@ func main(){
 
 	GetHost()
 	go CronHost()
-	go Ping()
+	go CronPing()
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
