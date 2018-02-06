@@ -30,18 +30,20 @@ func Ping(){
 		Logger().Println("Idle")
 	}
 
-	for i:=0;i<8;i++ {
+	pinger.MaxRTT = time.Duration(5) * time.Second
+
+	for i:=0;i<1;i++ {
 		err := pinger.Run()
 		if err != nil {
 			Logger().Println(err.Error())
 		}
 	}
 
-	/*for k,v := range output{
-		if v == "false"{
+	for k,v := range output{
+		if v == 0{
 			fmt.Println(k)
 		}
-	}*/
+	}
 
 	//formatMetric(output)
 }
