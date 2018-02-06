@@ -9,17 +9,20 @@ import (
 	"github.com/tatsushid/go-fastping"
 	"net"
 	"time"
+	"fmt"
 )
 
 func Ping(){
-	//output := make(map[string]string)
-	//ipmap := GetHostMap()
+	output := make(map[string]string)
+	ipmap := GetHostMap()
 	pinger := fastping.NewPinger()
-	for k,_ := range GetHostMap() {
+	for k,v := range GetHostMap() {
+		output[v] = "false"
 		pinger.AddIP(k)
 	}
 	pinger.OnRecv = func(addr *net.IPAddr, rtt time.Duration){
 		Logger().Println("success:",addr.String())
+		output[ipmap[addr.String()]] = "success"
 	}
 	pinger.OnIdle = func() {
 		Logger().Println("Idle")
@@ -27,6 +30,12 @@ func Ping(){
 	err := pinger.Run()
 	if err != nil {
 		Logger().Println(err.Error())
+	}
+
+	for k,v := range output{
+		if v == "false"{
+			fmt.Println(k)
+		}
 	}
 }
 
