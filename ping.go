@@ -9,38 +9,48 @@ import (
 	"github.com/tatsushid/go-fastping"
 	"net"
 	"time"
+	//"fmt"
 	"fmt"
 )
 
 func Ping(){
-	output := make(map[string]string)
+	output := make(map[string]int)
 	ipmap := GetHostMap()
 	pinger := fastping.NewPinger()
+	fmt.Println(pinger.MaxRTT.String())
 	for k,v := range GetHostMap() {
-		output[v] = "false"
+		output[v] = 0
 		pinger.AddIP(k)
 	}
 	pinger.OnRecv = func(addr *net.IPAddr, rtt time.Duration){
 		Logger().Println("success:",addr.String())
-		output[ipmap[addr.String()]] = "success"
+		output[ipmap[addr.String()]] = 1
 	}
 	pinger.OnIdle = func() {
 		Logger().Println("Idle")
 	}
 
-	for i:=0;i<5;i++ {
+	for i:=0;i<8;i++ {
 		err := pinger.Run()
 		if err != nil {
 			Logger().Println(err.Error())
 		}
 	}
 
-	for k,v := range output{
+	/*for k,v := range output{
 		if v == "false"{
 			fmt.Println(k)
 		}
-	}
+	}*/
+
+	//formatMetric(output)
 }
+
+/*func formatMetric(output map[string]string){
+
+
+
+}*/
 
 //由于未知原因，部分机器在数据库无ip
 func nslookup(hostname string) (string, error) {
