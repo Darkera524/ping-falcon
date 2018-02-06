@@ -16,7 +16,6 @@ func Ping(){
 	//ipmap := GetHostMap()
 	pinger := fastping.NewPinger()
 	for k,_ := range GetHostMap() {
-		Logger().Println(k)
 		pinger.AddIP(k)
 	}
 	pinger.OnRecv = func(addr *net.IPAddr, rtt time.Duration){
