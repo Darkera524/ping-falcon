@@ -1,13 +1,13 @@
 package main
 
 import "time"
-import "log"
+//import "log"
 
 var hostmap map[string]string
 
 func GetHost(){
 	hostmap = make(map[string]string)
-	sql := "select hostname,ip from host where ip = \"\""
+	sql := "select hostname,ip from host"
 	rows, err := DB.Query(sql)
 	if err != nil {
 		Logger().Println("ERROR:", err)
@@ -27,7 +27,7 @@ func GetHost(){
 		}
 
 		hostmap[ip] = hostname
-		log.Println(hostname,":",ip)
+		//log.Println(hostname,":",ip)
 	}
 
 	defer rows.Close()
