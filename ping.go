@@ -17,7 +17,7 @@ func Ping(){
 	output := make(map[string]int)
 	ipmap := GetHostMap()
 	pinger := fastping.NewPinger()
-	fmt.Println(pinger.MaxRTT.String())
+
 	for k,v := range GetHostMap() {
 		output[v] = 0
 		pinger.AddIP(k)
@@ -31,6 +31,7 @@ func Ping(){
 	}
 
 	pinger.MaxRTT = time.Duration(5) * time.Second
+	fmt.Println(pinger.MaxRTT.String())
 
 	for i:=0;i<1;i++ {
 		err := pinger.Run()
