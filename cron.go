@@ -1,6 +1,7 @@
 package main
 
 import "time"
+import "log"
 
 var hostmap map[string]string
 
@@ -26,6 +27,7 @@ func GetHost(){
 		}
 
 		hostmap[ip] = hostname
+		log.Println(hostname,":",ip)
 	}
 
 	defer rows.Close()
