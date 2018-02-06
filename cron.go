@@ -25,7 +25,7 @@ func GetHost(){
 			continue
 		}
 
-		hostmap[hostname] = ip
+		hostmap[ip] = hostname
 	}
 
 	defer rows.Close()
