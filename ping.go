@@ -29,11 +29,11 @@ func ping(){
 		pinger.AddIP(k)
 	}
 	pinger.OnRecv = func(addr *net.IPAddr, rtt time.Duration){
-		Logger().Println("success:",addr.String())
+		//Logger().Println("success:",addr.String())
 		output[addr.String()] = 1
 	}
 	pinger.OnIdle = func() {
-		Logger().Println("Idle")
+		Logger().Println("finish loop")
 	}
 
 	for i:=0;i<10;i++ {
