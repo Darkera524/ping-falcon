@@ -24,13 +24,13 @@ func ping(){
 	ipmap := GetHostMap()
 	pinger := fastping.NewPinger()
 
-	for k,v := range GetHostMap() {
-		output[v] = 0
+	for k,_ := range GetHostMap() {
+		output[k] = 0
 		pinger.AddIP(k)
 	}
 	pinger.OnRecv = func(addr *net.IPAddr, rtt time.Duration){
 		Logger().Println("success:",addr.String())
-		output[ipmap[addr.String()]] = 1
+		output[addr.String()] = 1
 	}
 	pinger.OnIdle = func() {
 		Logger().Println("Idle")
@@ -49,7 +49,7 @@ func ping(){
 		}
 	}*/
 
-	metrics, err := formatMetric(output)
+	metrics, err := formatMetric(output,ipmap)
 	if err != nil {
 		Logger().Println(err.Error())
 	}
@@ -58,13 +58,13 @@ func ping(){
 
 }
 
-func formatMetric(output map[string]int)(metrics []*model.MetricValue, err error){
+func formatMetric(output map[string]int,ipmap map[string]string)(metrics []*model.MetricValue, err error){
 	hostname,err := os.Hostname()
 	if err != nil {
 		return metrics,err
 	}
 	for k,v := range output {
-		tags := fmt.Sprintf("hostname=%s",k)
+		tags := fmt.Sprintf("ip=%s,hostname=%s",k,ipmap[k])
 		now := time.Now().Unix()
 		singleMetric := &model.MetricValue{
 			Endpoint:  hostname,
