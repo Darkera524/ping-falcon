@@ -45,6 +45,24 @@ func ping(){
 		}
 	}
 
+	time.Sleep(time.Duration(10) * time.Second)
+
+	for i:=0;i<10;i++ {
+		err := pinger.Run()
+		if err != nil {
+			Logger().Println(err.Error())
+		}
+	}
+
+	time.Sleep(time.Duration(10) * time.Second)
+
+	for i:=0;i<10;i++ {
+		err := pinger.Run()
+		if err != nil {
+			Logger().Println(err.Error())
+		}
+	}
+
 	/*for k,v := range output{
 		if v == 0{
 			fmt.Println(k)
