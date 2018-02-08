@@ -38,7 +38,7 @@ func ping(){
 
 	pinger.MaxRTT = time.Second * 5
 
-	for i:=0;i<1;i++ {
+	for i:=0;i<2;i++ {
 		err := pinger.Run()
 		if err != nil {
 			Logger().Println(err.Error())
